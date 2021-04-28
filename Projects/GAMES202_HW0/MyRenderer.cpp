@@ -32,7 +32,7 @@ bool MyRenderer::Initialize(GraphicsCore* pCore)
 	if (!Renderer::Initialize(pCore))
 		return false;
 
-	m_MainScene.AddModel("mary", "assets/mary/Marry.obj");
+	m_MainScene.AddModel("mary", "../../Assets/mary/Marry.obj");
 
 	
 	return true;
