@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{835b9641-4e4f-4409-926f-64f47cc0aa2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Component">
+      <UniqueIdentifier>{be0e4b20-1f28-4a79-a89c-2c581017fd19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Graphics">
+      <UniqueIdentifier>{d57de00e-6aeb-4138-8322-782576c89f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Hierarchy">
+      <UniqueIdentifier>{e5aeea51-b6f8-45d5-a622-d8114d98a272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Math">
+      <UniqueIdentifier>{1855ec63-d3b9-4597-b71c-03d6c95904ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Utils">
+      <UniqueIdentifier>{4733944d-f6c2-4220-a246-de7b359f31e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{c2ba24ee-45c5-49e0-93a5-c34babae0ef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Utils">
+      <UniqueIdentifier>{561864e8-f9d4-4c96-a111-e92391590e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Hierarchy">
+      <UniqueIdentifier>{d3ae3682-bcc6-48a3-8369-81ec00c1e4ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Graphics">
+      <UniqueIdentifier>{2eafe60e-102d-4ee3-83d6-95777e72672e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Component">
+      <UniqueIdentifier>{dc7ce6a5-e536-4d52-bdf5-4a7090a4ef87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{7de05741-ab65-4188-ac29-27746a5f5c78}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Components\Camera.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\Component.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\Light.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\Material.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\MeshFilter.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\RenderTexture(todo_dx11_split).cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\Transform.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\Effect.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\Renderer.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\RenderStates.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\ResourceManager.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\ScreenGrab11.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\WICTextureLoader11.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\d3dUtil.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\DDSTextureLoader11.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\DXTrace.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Hirachey\Scene.cpp">
+      <Filter>Src\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Hirachey\GameObject.cpp">
+      <Filter>Src\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\GameTimer.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\Geometry.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\ObjectPool.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\GameInput.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\RendererBase.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Include\Component\Camera.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\Component.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\Light.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\Material.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\MeshFilter.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\TextureRender.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\Transform.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Math\XMath.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\ResourceManager.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\Effect.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\MainWindow.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\Renderer.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\RendererBase.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Hierarchy\GameObject.h">
+      <Filter>Include\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Hierarchy\Scene.h">
+      <Filter>Include\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Utils\Geometry.h">
+      <Filter>Include\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Utils\ObjectPool.h">
+      <Filter>Include\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Utils\GameInput.h">
+      <Filter>Include\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Utils\GameTimer.h">
+      <Filter>Include\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\HLSL\XDefines.h">
+      <Filter>HLSL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\WICTextureLoader11.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\d3dUtil.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\DDSTextureLoader11.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\DXTrace.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\ScreenGrab11.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\RenderStates.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Include\HLSL\Phong.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Include\HLSL\XUtils.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+  </ItemGroup>
+</Project>

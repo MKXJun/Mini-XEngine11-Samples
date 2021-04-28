@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e5774546-124b-4c90-810c-0688a6053204}</ProjectGuid>
+    <RootNamespace>MiniXEngine11</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
+    <TargetName>Mini-XEngine-debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
+    <TargetName>Mini-XEngine</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../Include;../../ThirdParty/assimp/include;../../ThirdParty/json/include;../../ThirdParty/Eigen3/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>dxgi.lib;d3d11.lib;dxguid.lib;d3dcompiler.lib;winmm.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../ThirdParty/assimp/lib/Debug;</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../Include;../../ThirdParty/assimp/include;../../ThirdParty/json/include;../../ThirdParty/Eigen3/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>dxgi.lib;d3d11.lib;dxguid.lib;d3dcompiler.lib;winmm.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../ThirdParty/assimp/lib/Release;</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Components\Camera.cpp" />
+    <ClCompile Include="..\..\Src\Components\Component.cpp" />
+    <ClCompile Include="..\..\Src\Components\Light.cpp" />
+    <ClCompile Include="..\..\Src\Components\Material.cpp" />
+    <ClCompile Include="..\..\Src\Components\MeshFilter.cpp" />
+    <ClCompile Include="..\..\Src\Components\RenderTexture(todo_dx11_split).cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Components\Transform.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\d3dUtil.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\DDSTextureLoader11.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\DXTrace.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\Effect.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\RendererBase.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\RenderStates.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\ResourceManager.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\ScreenGrab11.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\WICTextureLoader11.cpp" />
+    <ClCompile Include="..\..\Src\Hirachey\GameObject.cpp" />
+    <ClCompile Include="..\..\Src\Hirachey\Scene.cpp" />
+    <ClCompile Include="..\..\Src\Utils\GameInput.cpp" />
+    <ClCompile Include="..\..\Src\Utils\GameTimer.cpp" />
+    <ClCompile Include="..\..\Src\Utils\Geometry.cpp" />
+    <ClCompile Include="..\..\Src\Utils\ObjectPool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Include\Component\Camera.h" />
+    <ClInclude Include="..\..\Include\Component\Component.h" />
+    <ClInclude Include="..\..\Include\Component\Light.h" />
+    <ClInclude Include="..\..\Include\Component\Material.h" />
+    <ClInclude Include="..\..\Include\Component\MeshFilter.h" />
+    <ClInclude Include="..\..\Include\Component\TextureRender.h" />
+    <ClInclude Include="..\..\Include\Component\Transform.h" />
+    <ClInclude Include="..\..\Include\Graphics\Effect.h" />
+    <ClInclude Include="..\..\Include\Graphics\MainWindow.h" />
+    <ClInclude Include="..\..\Include\Graphics\Renderer.h" />
+    <ClInclude Include="..\..\Include\Graphics\RendererBase.h" />
+    <ClInclude Include="..\..\Include\Graphics\RenderStates.h" />
+    <ClInclude Include="..\..\Include\Graphics\ResourceManager.h" />
+    <ClInclude Include="..\..\Include\Hierarchy\GameObject.h" />
+    <ClInclude Include="..\..\Include\Hierarchy\Scene.h" />
+    <ClInclude Include="..\..\Include\HLSL\XDefines.h" />
+    <ClInclude Include="..\..\Include\Math\XMath.h" />
+    <ClInclude Include="..\..\Include\Utils\GameInput.h" />
+    <ClInclude Include="..\..\Include\Utils\GameTimer.h" />
+    <ClInclude Include="..\..\Include\Utils\Geometry.h" />
+    <ClInclude Include="..\..\Include\Utils\ObjectPool.h" />
+    <ClInclude Include="..\..\Src\Graphics\d3dUtil.h" />
+    <ClInclude Include="..\..\Src\Graphics\DDSTextureLoader11.h" />
+    <ClInclude Include="..\..\Src\Graphics\DXTrace.h" />
+    <ClInclude Include="..\..\Src\Graphics\ScreenGrab11.h" />
+    <ClInclude Include="..\..\Src\Graphics\WICTextureLoader11.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Include\HLSL\Phong.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Include\HLSL\XUtils.hlsli" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
