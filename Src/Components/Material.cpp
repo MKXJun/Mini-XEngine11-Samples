@@ -154,6 +154,11 @@ void Material::SetAttribute(std::string_view str, const void* data, uint32_t byt
 	}
 }
 
+const std::string& Material::GetEffectName() const
+{
+	return m_EffectName;
+}
+
 const std::string& Material::GetPassName() const
 {
 	return m_PassName;

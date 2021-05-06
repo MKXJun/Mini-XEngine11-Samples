@@ -47,23 +47,27 @@ GameObject* Scene::AddCube(std::string_view name)
 	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
 	pMeshData = std::make_unique<MeshData>();
 	Geometry::CreateBox(pMeshData.get());
-	pObj->AddComponent<Material>();
+	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
 	return pObj;
 }
 
 GameObject* Scene::AddSphere(std::string_view name)
 {
 	GameObject* pObj = GameObject::Create(this, name);
-	pObj->AddComponent<MeshFilter>();
-	pObj->AddComponent<Material>();
+	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
+	pMeshData = std::make_unique<MeshData>();
+	Geometry::CreateSphere(pMeshData.get());
+	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
 	return pObj;
 }
 
 GameObject* Scene::AddCylinder(std::string_view name)
 {
 	GameObject* pObj = GameObject::Create(this, name);
-	pObj->AddComponent<MeshFilter>();
-	pObj->AddComponent<Material>();
+	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
+	pMeshData = std::make_unique<MeshData>();
+	Geometry::CreateCylinder(pMeshData.get());
+	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
 	return pObj;
 }
 

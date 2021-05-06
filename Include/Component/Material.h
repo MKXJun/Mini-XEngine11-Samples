@@ -31,8 +31,6 @@ public:
 	Material(GameObject* pObject);
 	Component* Instantiate(GameObject* pObject) override;
 
-	static std::shared_ptr<Material> CreateDefaultPhongMaterial(std::string passName = "Color");
-
 	void SetScalar(std::string_view str, float num);
 	void SetScalar(std::string_view str, int32_t num);
 	void SetScalar(std::string_view str, uint32_t num);
@@ -55,6 +53,7 @@ public:
 	void SetEffectPass(std::string effectName, std::string passName);
 	void SetPassName(std::string passName);
 
+	const std::string& GetEffectName() const;
 	const std::string& GetPassName() const;
 
 	std::vector<const std::pair<const std::string, std::vector<uint8_t>>*> GetAttributes() const;

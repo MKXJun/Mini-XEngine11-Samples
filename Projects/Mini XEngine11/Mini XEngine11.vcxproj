@@ -109,9 +109,9 @@
     <ClCompile Include="..\..\Src\Graphics\DDSTextureLoader11.cpp" />
     <ClCompile Include="..\..\Src\Graphics\DXTrace.cpp" />
     <ClCompile Include="..\..\Src\Graphics\Effect.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\EffectManager.cpp" />
     <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp" />
     <ClCompile Include="..\..\Src\Graphics\Renderer.cpp" />
-    <ClCompile Include="..\..\Src\Graphics\RendererBase.cpp" />
     <ClCompile Include="..\..\Src\Graphics\RenderStates.cpp" />
     <ClCompile Include="..\..\Src\Graphics\ResourceManager.cpp" />
     <ClCompile Include="..\..\Src\Graphics\ScreenGrab11.cpp" />
@@ -132,9 +132,9 @@
     <ClInclude Include="..\..\Include\Component\TextureRender.h" />
     <ClInclude Include="..\..\Include\Component\Transform.h" />
     <ClInclude Include="..\..\Include\Graphics\Effect.h" />
+    <ClInclude Include="..\..\Include\Graphics\EffectManager.h" />
     <ClInclude Include="..\..\Include\Graphics\MainWindow.h" />
     <ClInclude Include="..\..\Include\Graphics\Renderer.h" />
-    <ClInclude Include="..\..\Include\Graphics\RendererBase.h" />
     <ClInclude Include="..\..\Include\Graphics\RenderStates.h" />
     <ClInclude Include="..\..\Include\Graphics\ResourceManager.h" />
     <ClInclude Include="..\..\Include\Hierarchy\GameObject.h" />

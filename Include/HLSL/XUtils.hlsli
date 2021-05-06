@@ -3,21 +3,6 @@
 
 #include "XDefines.h"
 
-void ComputeLightAttenuation(Light light, float3 worldPos, out float att, out float3 lightVec)
-{
-    lightVec = light.Position - worldPos;
-    float dist = length(lightVec);
-    lightVec = normalize(lightVec);
-    if (light.Range < dist)
-    {
-        att = 0.0f;
-    }
-    else
-    {
-        float ratio = dist / light.Range;
-        att = 1.0f / (1.0f + 3.0f * ratio + 6.0f * ratio * ratio);
-    }
-}
 
 void ComputePhongDirectionalLight(Light light, float3 ambientColor, float4 matAmbient, float4 matDiffuse, float4 matSpecular,
     float3 normal, float3 toEye,
@@ -55,12 +40,10 @@ void ComputePhongPointLight(Light light, float3 ambientColor, float4 matAmbient,
     outDiffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
     outSpecular = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    float att = 0.0f;
-    float3 lightVec = float3(0.0f, 0.0f, 0.0f);
-    ComputeLightAttenuation(light, pos, att, lightVec);
-
-    if (att == 0.0f)
-        return;
+    
+    float3 lightVec = light.Position - pos;
+    float att = 1.0f / length(lightVec);
+    lightVec = normalize(lightVec);
 
 	// 环境光计算
     outAmbient = matAmbient * float4(ambientColor, 1.0f);
@@ -92,12 +75,9 @@ void ComputePhongSpotLight(Light light, float3 ambientColor, float4 matAmbient, 
     outDiffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
     outSpecular = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    float att = 0.0f;
-    float3 lightVec = float3(0.0f, 0.0f, 0.0f);
-    ComputeLightAttenuation(light, pos, att, lightVec);
-
-    if (att == 0.0f)
-        return;
+    float3 lightVec = light.Position - pos;
+    float att = 1.0f / length(lightVec);
+    lightVec = normalize(lightVec);
 
 	// 计算环境光部分
     outAmbient = matAmbient * float4(ambientColor, 1.0f);

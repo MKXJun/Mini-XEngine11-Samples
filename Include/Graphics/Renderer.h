@@ -2,28 +2,48 @@
 
 #include <wrl/client.h>
 #include <Graphics/ResourceManager.h>
-#include <Graphics/RendererBase.h>
+#include <Graphics/EffectManager.h>
 
 // TODO LIST:
 // [ ] Mouse mode switching problem.
 // [ ] ImGui support.
-// [ ] Effects.json need to support RenderStates.
 // [ ] Template Project.
-// [ ] GAMES202 HW1.
+// [ ] GAMES202 HW0.
+// [*] Effects.json need to support RenderStates.
 
-class Renderer : public RendererBase
+class GraphicsCore
+{
+public:
+	Microsoft::WRL::ComPtr<ID3D11Device> device;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> adapter;
+
+	HWND hWindow = nullptr;
+	HINSTANCE hInstance = nullptr;
+	std::wstring winName;
+	int clientWidth = 0;
+	int clientHeight = 0;
+
+	bool isAppPaused = false;
+	bool isMinimized = false;
+	bool isMaximized = false;
+	bool isResizing = false;
+};
+
+class Renderer
 {
 public:
 	Renderer();
-	virtual ~Renderer() override;
+	virtual ~Renderer() = 0;
 
-	virtual bool Initialize(GraphicsCore*) override;
-	virtual void Cleanup(GraphicsCore*) override;
-	virtual void OnResize(GraphicsCore*) override;
-	virtual void Update(float deltaTime) override;
-	virtual void BeginNewFrame(GraphicsCore*) override;
-	virtual void DrawScene(GraphicsCore*) override;
-	virtual void EndFrame(GraphicsCore*) override;
+	virtual bool Initialize(GraphicsCore*) = 0;
+	virtual void Cleanup(GraphicsCore*) = 0;
+	virtual void OnResize(GraphicsCore*) = 0;
+	virtual void Update(float deltaTime) = 0;
+	virtual void BeginNewFrame(GraphicsCore*) = 0;
+	virtual void DrawScene(GraphicsCore*);
+	virtual void EndFrame(GraphicsCore*) = 0;
 
 	class RenderSetting {
 	public:
@@ -32,18 +52,33 @@ public:
 	};
 
 protected:
+	friend class MainWindow;
+
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pBackBuffer[2];
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilBuffer;
-	Scene m_MainScene{};
-	ResourceManager m_ResourceManager{};
+	std::unique_ptr<ResourceManager> m_pResourceManager;
+	std::unique_ptr<EffectManager> m_pEffectManager;
+	Scene m_MainScene;
 
 private:
-	void UpdateMeshResource(GraphicsCore* pCore, MeshData* pMeshData, MeshGraphicsResource* pMeshResource, const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputLayout);
-	void DrawGameObject(GraphicsCore* pCore, GameObject* pObject);
+	void _UpdateMeshResource(GraphicsCore* pCore, MeshData* pMeshData, MeshGraphicsResource* pMeshResource, const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputLayout);
+	void _DrawGameObject(GraphicsCore* pCore, GameObject* pObject);
+
+	bool _Initialize(GraphicsCore*);
+	void _OnResize(GraphicsCore*);
+	void _Update(float deltaTime);
+	void _BeginNewFrame(GraphicsCore*);
+	void _EndFrame(GraphicsCore*);
+
+
+private:
+	std::set<std::string> m_UsedEffects;
 };
 
+Renderer* GetRenderer();
+
 #define CREATE_CUSTOM_RENDERER(ClassName) \
-RendererBase* GetRenderer() \
+Renderer* GetRenderer() \
 {\
 	static std::unique_ptr<ClassName> s_pRenderer;\
 	if (!s_pRenderer)\

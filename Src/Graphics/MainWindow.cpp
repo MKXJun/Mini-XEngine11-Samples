@@ -1,6 +1,6 @@
 #include "d3dUtil.h"
 #include <Graphics/MainWindow.h>
-#include <Graphics/RendererBase.h>
+#include <Graphics/Renderer.h>
 #include <Utils/GameInput.h>
 #include "DXTrace.h"
 
@@ -12,9 +12,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-		RendererBase* pBase = GetRenderer();
+		Renderer* pRenderer = GetRenderer();
 		MainWindow win(hInstance, L"Mini XEngine11", 1280, 720);
-		if (!win.Initialize(pBase))
+		if (!win.Initialize(pRenderer))
 			return EXIT_FAILURE;
 		return win.Run();
 	}
@@ -37,9 +37,9 @@ int main(int argc, char* argv[])
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-		RendererBase* pBase = GetRenderer();
+		Renderer* pRenderer = GetRenderer();
 		MainWindow win(GetModuleHandle(nullptr), L"Mini XEngine11", 1280, 720);
-		if (!win.Initialize(pBase))
+		if (!win.Initialize(pRenderer))
 			return EXIT_FAILURE;
 		return win.Run();
 	}
@@ -82,16 +82,19 @@ MainWindow::~MainWindow()
 	}
 }
 
-bool MainWindow::Initialize(RendererBase* pBase)
+bool MainWindow::Initialize(Renderer* pRenderer)
 {
-	m_pRendererBase = pBase;
+	m_pRenderer = pRenderer;
 	if (m_pGraphicsCore)
 		delete m_pGraphicsCore;
 	m_pGraphicsCore = new GraphicsCore;
 	m_pGraphicsCore->hInstance = m_hInstance;
 	m_pGraphicsCore->winName = m_WinName;
 	InitMainWindow();
-	if (!pBase->Initialize(m_pGraphicsCore))
+	GameInput::Initialize();
+	if (!m_pRenderer->_Initialize(m_pGraphicsCore))	// internal def
+		return false;
+	if (!m_pRenderer->Initialize(m_pGraphicsCore))	// user def
 		return false;
 	OnResize();
 	return true;
@@ -118,10 +121,18 @@ int MainWindow::Run()
 			if (!m_pGraphicsCore->isAppPaused)
 			{
 				CalculateFrameStats();
-				m_pRendererBase->Update(m_Timer.DeltaTime());
-				m_pRendererBase->BeginNewFrame(m_pGraphicsCore);
-				m_pRendererBase->DrawScene(m_pGraphicsCore);
-				m_pRendererBase->EndFrame(m_pGraphicsCore);
+				float deltaTime = m_Timer.DeltaTime();
+				GameInput::Update(deltaTime);
+				m_pRenderer->Update(deltaTime);		// user def
+				m_pRenderer->_Update(deltaTime);	// internal def
+
+				m_pRenderer->_BeginNewFrame(m_pGraphicsCore);	// internal def
+				m_pRenderer->BeginNewFrame(m_pGraphicsCore);	// user def
+
+				m_pRenderer->DrawScene(m_pGraphicsCore);
+
+				m_pRenderer->EndFrame(m_pGraphicsCore);		// user def
+				m_pRenderer->_EndFrame(m_pGraphicsCore);	// internal def
 			}
 			else
 			{
@@ -129,6 +140,8 @@ int MainWindow::Run()
 			}
 		}
 	}
+
+	m_pRenderer->Cleanup(m_pGraphicsCore);
 
 	return (int)msg.wParam;
 }
@@ -326,7 +339,8 @@ bool MainWindow::InitMainWindow()
 
 void MainWindow::OnResize()
 {
-	m_pRendererBase->OnResize(m_pGraphicsCore);
+	m_pRenderer->_OnResize(m_pGraphicsCore);
+	m_pRenderer->OnResize(m_pGraphicsCore);
 }
 
 void MainWindow::CalculateFrameStats()

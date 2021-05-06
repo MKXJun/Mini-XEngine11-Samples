@@ -59,7 +59,7 @@ VertexPosHWNormal Color_VS(VertexPosNormal vIn)
     vector posW = mul(float4(vIn.PosL, 1.0f), X_CB_WORLD);
     
     vOut.PosW = posW.xyz;
-    vOut.PosH = mul(posW, X_CB_WORLD_VIEW_PROJ);
+    vOut.PosH = mul(posW, X_CB_VIEW_PROJ);
     vOut.NormalW = mul(vIn.NormalL, (float3x3) X_CB_WORLD_INV_TRANSPOSE);
     
     return vOut;
@@ -72,7 +72,7 @@ VertexPosHWNormalTex Basic_VS(VertexPosNormalTex vIn)
     vector posW = mul(float4(vIn.PosL, 1.0f), X_CB_WORLD);
     
     vOut.PosW = posW.xyz;
-    vOut.PosH = mul(posW, X_CB_WORLD_VIEW_PROJ);
+    vOut.PosH = mul(posW, X_CB_VIEW_PROJ);
     vOut.NormalW = mul(vIn.NormalL, (float3x3) X_CB_WORLD_INV_TRANSPOSE);
     vOut.Tex = vIn.Tex;
     return vOut;
@@ -103,10 +103,10 @@ float4 Color_PS(VertexPosHWNormal pIn) : SV_Target
                 ComputePhongDirectionalLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.NormalW, toEyeW, A, D, S);
                 break;
             case X_LIGHT_POINT:
-                ComputePhongPointLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, X_CB_EYEPOS_W, pIn.NormalW, toEyeW, A, D, S);
+                ComputePhongPointLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.PosW, pIn.NormalW, toEyeW, A, D, S);
                 break;
             case X_LIGHT_SPOT:
-                ComputePhongSpotLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, X_CB_EYEPOS_W, pIn.NormalW, toEyeW, A, D, S);
+                ComputePhongSpotLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.PosW, pIn.NormalW, toEyeW, A, D, S);
                 break;
         }
         ambient += A;
@@ -150,10 +150,10 @@ float4 Basic_PS(VertexPosHWNormalTex pIn) : SV_Target
                 ComputePhongDirectionalLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.NormalW, toEyeW, A, D, S);
                 break;
             case X_LIGHT_POINT:
-                ComputePhongPointLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, X_CB_EYEPOS_W, pIn.NormalW, toEyeW, A, D, S);
+                ComputePhongPointLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.PosW, pIn.NormalW, toEyeW, A, D, S);
                 break;
             case X_LIGHT_SPOT:
-                ComputePhongSpotLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, X_CB_EYEPOS_W, pIn.NormalW, toEyeW, A, D, S);
+                ComputePhongSpotLight(X_CB_LIGHT[i], X_CB_LIGHT_AMBIENT_COLOR.rgb, X_CB_MAT_PHONG, pIn.PosW, pIn.NormalW, toEyeW, A, D, S);
                 break;
         }
         ambient += A;

@@ -28,13 +28,13 @@
 using namespace Microsoft::WRL;
 using namespace XMath;
 
-
 namespace
 {
 	ResourceManager* s_pSingleton = nullptr;
 }
 
-ResourceManager::ResourceManager()
+ResourceManager::ResourceManager(ID3D11Device* device)
+	: m_pDevice(device)
 {
 	if (s_pSingleton)
 		throw std::exception("ResourceManager is a singleton!");
@@ -43,108 +43,15 @@ ResourceManager::ResourceManager()
 
 ResourceManager::~ResourceManager()
 {
-	for (auto ptr : m_pModels)
-		ptr.second->Destroy();
+	for (auto& p : m_pModels)
+	{
+		p.second->Destroy();
+	}
 }
 
 ResourceManager& ResourceManager::Get()
 {
 	return *s_pSingleton;
-}
-
-void ResourceManager::CreateEffectsFromJson(std::string_view jsonPath)
-
-{
-	std::ifstream fin(jsonPath.data());
-	nlohmann::json json;
-	if (!fin.is_open())
-		throw std::exception("Error: effect json file is not found!");
-	fin >> json;
-	if (!json.is_array())
-		throw std::exception("Error: effect json file must start with array!");
-	size_t effectCount = json.size();
-	for (size_t i = 0; i < effectCount; ++i)
-	{
-		auto& effectObject = json[i];
-		if (!effectObject.is_object())
-			throw std::exception("Error: effect object must be json object!");
-
-		auto effectName = effectObject["effectName"].get<std::string>();
-		auto effectPath = effectObject["path"].get<std::string>();
-		auto& passArray = effectObject["passes"];
-		auto passCount = passArray.size();
-
-		auto pEffect = std::make_unique<Effect>();
-
-		std::map<std::string, std::map<std::string, ComPtr<ID3DBlob>>> shaderBlobs;
-		std::vector<std::string> shaderTypes = {
-			"vs", "ds", "hs", "gs", "ps", "cs"
-		};
-
-		for (size_t j = 0; j < passCount; ++j)
-		{
-			shaderBlobs.try_emplace(shaderTypes[j]);
-			auto& passObject = passArray[j];
-			auto passName = passObject["passName"].get<std::string>();
-			EffectPassDesc passDesc;
-			size_t shaderTypeCount = shaderTypes.size();
-			std::vector<std::string> shaderNames(shaderTypeCount);
-			for (size_t k = 0; k < shaderTypeCount; ++k)
-			{
-				auto it = passObject.find(shaderTypes[k]);
-				if (it != passObject.end() && !it->is_null())
-				{
-					shaderNames[k] = it->get<std::string>();
-					LPCSTR* strs = reinterpret_cast<LPCSTR*>(&passDesc);
-					strs[k] = shaderNames[k].c_str();
-
-					auto it = shaderBlobs[shaderTypes[k]].find(strs[k]);
-					if (it == shaderBlobs[shaderTypes[k]].end())
-					{
-						it = shaderBlobs[shaderTypes[k]].emplace(strs[k], nullptr).first;
-						std::wstring hlslPath = UTF8ToUCS2(effectPath);
-						if (hlslPath.back() != L'/' && hlslPath.back() != L'\\')
-							hlslPath.push_back(L'/');
-						hlslPath += UTF8ToUCS2(effectName);
-						std::wstring csoPath = hlslPath + L'_';
-						csoPath += UTF8ToUCS2(shaderNames[k]);
-						std::string sm = shaderTypes[k] + "_5_0";
-						hlslPath += L".hlsl";
-						csoPath += L".cso";
-						ThrowIfFailed(CreateShaderFromFile(csoPath.c_str(), hlslPath.c_str(), strs[k], sm.c_str(), it->second.GetAddressOf()));
-						ThrowIfFailed(pEffect->AddShader(strs[k], m_pDevice.Get(), it->second.Get()));
-					}
-				}
-			}
-
-			ThrowIfFailed(pEffect->AddEffectPass(passName.c_str(), m_pDevice.Get(), &passDesc));
-		}
-
-		int slot = pEffect->GetSamplerStateByName(X_SAMPLER_LINEAR_WARP);
-		if (slot != -1) pEffect->SetSamplerStateBySlot(slot, RenderStates::SSLinearWrap.Get());
-		slot = pEffect->GetSamplerStateByName(X_SAMPLER_ANISTROPIC_WRAP);
-		if (slot != -1) pEffect->SetSamplerStateBySlot(slot, RenderStates::SSAnistropicWrap.Get());
-		slot = pEffect->GetSamplerStateByName(X_SAMPLER_POINT_CLAMP);
-		if (slot != -1) pEffect->SetSamplerStateBySlot(slot, RenderStates::SSPointClamp.Get());
-		slot = pEffect->GetSamplerStateByName(X_SAMPLER_SHADOW);
-		if (slot != -1) pEffect->SetSamplerStateBySlot(slot, RenderStates::SSShadow.Get());
-
-		m_pEffects[effectName].swap(pEffect);
-
-	}
-}
-
-bool ResourceManager::RegisterEffect(std::string_view effectName, std::unique_ptr<Effect>&& pEffect)
-{
-	return m_pEffects.try_emplace(effectName.data(), std::move(pEffect)).second;
-}
-
-Effect* ResourceManager::FindEffect(std::string_view effectName)
-{
-	auto it = m_pEffects.find(effectName.data());
-	if (it != m_pEffects.end())
-		return it->second.get();
-	return nullptr;
 }
 
 GameObject* ResourceManager::CreateModel(std::string_view path)
@@ -262,13 +169,19 @@ void ResourceManager::_LoadSubModel(std::string_view path, GameObject* pModel, c
 	auto pMeshFilter = pModel->AddComponent<MeshFilter>();
 	auto pMaterial = pModel->AddComponent<Material>();
 	auto pMeshData = (pMeshFilter->m_pMesh = std::make_unique<MeshData>()).get();
-
 	// 顶点位置
 	if (numVertices > 0)
 	{
 		pMeshData->vertices.resize(numVertices);
 		memcpy_s(pMeshData->vertices.data(), sizeof(Vector3) * numVertices,
 			pAssimpMesh->mVertices, sizeof(Vector3) * numVertices);
+		pMeshData->vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+		pMeshData->vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+		for (size_t i = 0; i < numVertices; ++i)
+		{
+			pMeshData->vMin = pMeshData->vMin.cwiseMin(pMeshData->vertices[i]);
+			pMeshData->vMax = pMeshData->vMax.cwiseMax(pMeshData->vertices[i]);
+		}
 	}
 
 	// 法向量

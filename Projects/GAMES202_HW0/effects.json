@@ -1,16 +1,21 @@
-[
-  {
-    "effectName": "Phong",
-    "path": "../../Include/HLSL/",
-    "passes": [{
-        "passName": "Color",
+{
+  "Phong": {
+    "Path": "../../Include/HLSL/",
+    "Passes": {
+      "Color": {
         "vs": "Color_VS",
-        "ps": "Color_PS"
-      },{
-        "passName": "Basic",
+        "ps": "Color_PS",
+        "rs": {
+          "CullMode": "None"
+        }
+      },
+      "Basic": {
         "vs": "Basic_VS",
-        "ps": "Basic_PS"
+        "ps": "Basic_PS",
+        "rs": {
+          "CullMode": "None"
+        }
       }
-    ]
+    }
   }
-]
+}

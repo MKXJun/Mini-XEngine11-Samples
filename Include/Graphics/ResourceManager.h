@@ -39,14 +39,10 @@ struct MeshGraphicsResource
 class ResourceManager
 {
 public:
-	ResourceManager();
+	ResourceManager(ID3D11Device* device);
 	~ResourceManager();
 
 	static ResourceManager& Get();
-
-	void CreateEffectsFromJson(std::string_view jsonPath);
-	bool RegisterEffect(std::string_view effectName, std::unique_ptr<Effect>&& pEffect);
-	Effect* FindEffect(std::string_view effectName);
 
 	GameObject* CreateModel(std::string_view path);
 	GameObject* FindModel(std::string_view path);
@@ -63,7 +59,6 @@ public:
 
 
 private:
-	friend class Renderer;
 
 	void _LoadSubModel(std::string_view path, GameObject* pModel, const aiScene* pAssimpScene, const aiMesh* pAssimpMesh);
 
@@ -72,8 +67,6 @@ private:
 	std::map<std::string, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextureSRVs;
 
 	std::map<std::string, GameObject*> m_pModels;
-
-	std::map<std::string, std::unique_ptr<Effect>> m_pEffects;
 
 	std::map<MeshData*, MeshGraphicsResource> m_MeshGraphicsResources;
 };

@@ -108,7 +108,7 @@
     <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp">
       <Filter>Src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Graphics\RendererBase.cpp">
+    <ClCompile Include="..\..\Src\Graphics\EffectManager.cpp">
       <Filter>Src\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -149,9 +149,6 @@
     <ClInclude Include="..\..\Include\Graphics\Renderer.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Graphics\RendererBase.h">
-      <Filter>Include\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Hierarchy\GameObject.h">
       <Filter>Include\Hierarchy</Filter>
     </ClInclude>
@@ -189,6 +186,9 @@
       <Filter>Src\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Graphics\RenderStates.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\EffectManager.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

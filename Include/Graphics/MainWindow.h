@@ -7,7 +7,7 @@
 #include <memory>
 #include <Utils/GameTimer.h>
 
-class RendererBase;
+class Renderer;
 class GraphicsCore;
 
 class MainWindow
@@ -16,7 +16,7 @@ public:
 	MainWindow(HINSTANCE hInstance, std::wstring winName, int startWidth, int startHeight);
 	~MainWindow();
 
-	bool Initialize(RendererBase*);
+	bool Initialize(Renderer*);
 	int Run();
 
 	LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -29,7 +29,7 @@ private:
 	void CalculateFrameStats();
 
 	GameTimer m_Timer;
-	RendererBase* m_pRendererBase = nullptr;
+	Renderer* m_pRenderer = nullptr;
 	GraphicsCore* m_pGraphicsCore = nullptr;
 
 	HINSTANCE m_hInstance;

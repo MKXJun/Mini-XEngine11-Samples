@@ -16,6 +16,7 @@ public:
 	virtual void EndFrame(GraphicsCore*) override;
 
 protected:
+	GameObject* m_pLight = nullptr;
 };
 
 MyRenderer::MyRenderer()
@@ -29,32 +30,31 @@ MyRenderer::~MyRenderer()
 
 bool MyRenderer::Initialize(GraphicsCore* pCore)
 {
-	if (!Renderer::Initialize(pCore))
-		return false;
-
+	m_pEffectManager->CreateEffectsFromJson("effects.json", "record.json");
 	m_MainScene.AddModel("mary", "../../Assets/mary/Marry.obj");
-
+	m_MainScene.FindGameObject("DirectionalLight")->Destroy();
 	
+	m_pLight = m_MainScene.AddCube("PointLight");
+	m_pLight->GetTransform()->SetScale(XMath::Vector3::Ones() * 0.025f);
+	auto pCubeLight = m_pLight->AddComponent<Light>();
+	pCubeLight->SetLightType(Light::PointLight);
+
 	return true;
 }
 
 void MyRenderer::Cleanup(GraphicsCore* pCore)
 {
-	Renderer::Cleanup(pCore);
 }
 
 void MyRenderer::OnResize(GraphicsCore* pCore)
 {
-	Renderer::OnResize(pCore);
 }
-
-#include <DirectXMath.h>
 
 void MyRenderer::Update(float deltaTime)
 {
-	GameInput::Update(deltaTime);
+	
 
-	static float phi = 0.0f, theta = 0.0f, dist = 5.0f;
+	static float phi = 0.0f, theta = 0.0f, dist = 5.0f, timer = 0.0f;
 	static int lastX = GameInput::Mouse::GetX(), lastY = GameInput::Mouse::GetY();
 	auto pCamTransform = m_MainScene.FindGameObject("MainCamera")->GetTransform();
 	
@@ -65,23 +65,21 @@ void MyRenderer::Update(float deltaTime)
 	}
 	dist = XMath::Scalar::Clamp(dist + GameInput::Mouse::GetScrollWheel(), 2.0f, 20.0f);
 	lastX = GameInput::Mouse::GetX(), lastY = GameInput::Mouse::GetY();
+	timer += deltaTime;
 
 	pCamTransform->SetRotation(phi, theta, 0.0f);
 	pCamTransform->SetPosition(XMath::Vector3::Zero());
 	pCamTransform->Translate(pCamTransform->GetForwardAxis(), -dist);
 	pCamTransform->Translate(Transform::UpAxis(), 2.0f);
 	
-	
-	
-
-	
-
-	Renderer::Update(deltaTime);
+	m_pLight->GetTransform()->SetPosition(XMath::Vector3(
+		sinf(timer * 1.5f),
+		2.0f + 2.0f * cosf(timer),
+		cosf(timer * 0.5f)));
 }
 
 void MyRenderer::BeginNewFrame(GraphicsCore* pCore)
 {
-	Renderer::BeginNewFrame(pCore);
 }
 
 void MyRenderer::DrawScene(GraphicsCore* pCore)
@@ -91,7 +89,6 @@ void MyRenderer::DrawScene(GraphicsCore* pCore)
 
 void MyRenderer::EndFrame(GraphicsCore* pCore)
 {
-	Renderer::EndFrame(pCore);
 }
 
 CREATE_CUSTOM_RENDERER(MyRenderer)

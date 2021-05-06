@@ -198,7 +198,7 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
         DXGI_FORMAT                 IndexBufferFormat;
         ID3D11InputLayout*          InputLayout;
     };
-    BACKUP_DX11_STATE old;
+    BACKUP_DX11_STATE old = {};
     old.ScissorRectsCount = old.ViewportsCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
     ctx->RSGetScissorRects(&old.ScissorRectsCount, old.ScissorRects);
     ctx->RSGetViewports(&old.ViewportsCount, old.Viewports);
@@ -305,6 +305,7 @@ static void ImGui_ImplDX11_CreateFontsTexture()
         subResource.SysMemPitch = desc.Width * 4;
         subResource.SysMemSlicePitch = 0;
         g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+        IM_ASSERT(pTexture != NULL);
 
         // Create texture view
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
