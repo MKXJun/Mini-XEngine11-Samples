@@ -11,9 +11,7 @@
 #include <Component/Camera.h>
 #include <Component/Light.h>
 #include <Component/MeshFilter.h>
-#include <Component/Material.h>
-
-#include <Graphics/Effect.h>
+#include <Component/MeshRenderer.h>
 
 struct aiMesh;
 struct aiScene;
@@ -55,11 +53,12 @@ public:
 	MeshGraphicsResource* FindMeshGraphicsResources(MeshData* ptr);
 	void DestroyMeshGraphicsResources(MeshData* ptr);
 
-
-
+	Material* CreateMaterial(std::string_view path);
+	Material* FindMaterial(std::string_view path);
+	
 
 private:
-
+	
 	void _LoadSubModel(std::string_view path, GameObject* pModel, const aiScene* pAssimpScene, const aiMesh* pAssimpMesh);
 
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
@@ -67,6 +66,8 @@ private:
 	std::map<std::string, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextureSRVs;
 
 	std::map<std::string, GameObject*> m_pModels;
+
+	std::map<std::string, Material> m_pMaterials;
 
 	std::map<MeshData*, MeshGraphicsResource> m_MeshGraphicsResources;
 };

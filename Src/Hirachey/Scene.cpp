@@ -1,10 +1,15 @@
 #include <Hierarchy/Scene.h>
 #include <Hierarchy/GameObject.h>
 #include <Utils/Geometry.h>
-#include <HLSL/XDefines.h>
 #include <Graphics/ResourceManager.h>
 
 using namespace XMath;
+
+namespace
+{
+	Scene* s_pMainScene = nullptr;
+	Material s_ColorLitMat;
+}
 
 Scene::Scene()
 {
@@ -16,9 +21,6 @@ Scene::Scene()
 	auto pMainCamera = AddGameObject("MainCamera");
 	m_pMainCamera = pMainCamera->AddComponent<Camera>();
 	m_pMainCamera->SetRenderTextureName("@BackBuffer");
-
-	auto pDirectionalLight = AddGameObject("DirectionalLight");
-	auto pLight = pDirectionalLight->AddComponent<Light>();
 }
 
 Scene::~Scene()
@@ -29,6 +31,16 @@ Scene::~Scene()
 	{
 		ptr->Destroy();
 	}
+}
+
+Scene* Scene::GetMainScene()
+{
+	return s_pMainScene;
+}
+
+void Scene::SetAsMainScene()
+{
+	s_pMainScene = this;
 }
 
 GameObject* Scene::AddGameObject()
@@ -47,7 +59,7 @@ GameObject* Scene::AddCube(std::string_view name)
 	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
 	pMeshData = std::make_unique<MeshData>();
 	Geometry::CreateBox(pMeshData.get());
-	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
+	//pObj->AddComponent<MeshRenderer>()->SetMaterial(ResourceManager::Get().FindMaterial("@DefaultColorLit"));
 	return pObj;
 }
 
@@ -57,7 +69,7 @@ GameObject* Scene::AddSphere(std::string_view name)
 	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
 	pMeshData = std::make_unique<MeshData>();
 	Geometry::CreateSphere(pMeshData.get());
-	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
+	//pObj->AddComponent<MeshRenderer>()->SetMaterial(ResourceManager::Get().FindMaterial("@DefaultColorLit"));
 	return pObj;
 }
 
@@ -67,7 +79,17 @@ GameObject* Scene::AddCylinder(std::string_view name)
 	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
 	pMeshData = std::make_unique<MeshData>();
 	Geometry::CreateCylinder(pMeshData.get());
-	pObj->AddComponent<Material>()->SetEffectPass("Phong", "Color");
+	//pObj->AddComponent<MeshRenderer>()->SetMaterial(ResourceManager::Get().FindMaterial("@DefaultColorLit"));
+	return pObj;
+}
+
+GameObject* Scene::AddPlane(std::string_view name)
+{
+	GameObject* pObj = GameObject::Create(this, name);
+	auto& pMeshData = pObj->AddComponent<MeshFilter>()->m_pMesh;
+	pMeshData = std::make_unique<MeshData>();
+	Geometry::CreatePlane(pMeshData.get());
+	//pObj->AddComponent<MeshRenderer>()->SetMaterial(ResourceManager::Get().FindMaterial("@DefaultColorLit"));
 	return pObj;
 }
 

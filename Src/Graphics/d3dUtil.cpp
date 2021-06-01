@@ -6,6 +6,8 @@
 
 using namespace DirectX;
 
+
+
 //
 // 静态全局函数
 //
@@ -35,7 +37,6 @@ static HRESULT CreateBuffer(
 	UINT structureByteStride,
 	UINT miscFlags);
 
-
 //
 // 编码相关
 //
@@ -59,16 +60,79 @@ std::string UCS2ToUTF8(std::wstring_view ucs2Str)
 
 
 //
+// XShaderInclude
+//
+HRESULT __stdcall XShaderInclude::Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
+
+{
+	try {
+		auto OpenFile = [&](std::string_view path) {
+			std::ifstream fin(path.data(), std::ios::in | std::ios::binary | std::ios::ate);
+			if (fin.is_open()) {
+				size_t fileSize = fin.tellg();
+				m_Data.resize(fileSize);
+				fin.seekg(0, std::ios::beg);
+				fin.read(m_Data.data(), fileSize);
+				fin.close();
+				*ppData = m_Data.data();
+				*pBytes = (UINT)fileSize;
+				return true;
+			}
+			return false;
+		};
+
+		if (IncludeType == D3D_INCLUDE_LOCAL)
+		{
+			if (m_ShaderDir.empty())
+				return OpenFile(pFileName) ? S_OK : ERROR_FILE_NOT_FOUND;
+			else
+			{
+				std::string path = m_ShaderDir;
+				if (path.back() != '/' || path.back() != '\\')
+					path.push_back('/');
+				path += pFileName;
+				std::replace(path.begin(), path.end(), '\\', '/');
+				return OpenFile(path) ? S_OK : ERROR_FILE_NOT_FOUND;
+			}
+		}
+		else if (IncludeType == D3D_INCLUDE_SYSTEM)
+		{
+			for (auto& dir : m_SystemDirs)
+			{
+				if (OpenFile(m_ShaderDir + dir + "/" + pFileName))
+					return S_OK;
+			}
+			return ERROR_FILE_NOT_FOUND;
+		}
+		else
+			return E_FAIL;
+	}
+	catch (std::exception&) {
+		return E_FAIL;
+	}
+}
+
+HRESULT __stdcall XShaderInclude::Close(LPCVOID pData)
+{
+	UNREFERENCED_PARAMETER(pData);
+	m_Data.clear();
+	return S_OK;
+}
+
+
+//
 // 着色器编译相关函数
 //
 
 
 HRESULT CreateShaderFromFile(
+	ID3DInclude* pIncludeHandler,
 	const WCHAR* csoFileNameInOut,
 	const WCHAR* hlslFileName,
 	LPCSTR entryPoint,
 	LPCSTR shaderModel,
-	ID3DBlob** ppBlobOut)
+	ID3DBlob** ppBlobOut,
+	ID3DBlob** ppErrorMsg)
 {
 	HRESULT hr = S_OK;
 
@@ -89,15 +153,18 @@ HRESULT CreateShaderFromFile(
 		dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 		ID3DBlob* errorBlob = nullptr;
-		hr = D3DCompileFromFile(hlslFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, shaderModel,
+		hr = D3DCompileFromFile(hlslFileName, nullptr, pIncludeHandler, entryPoint, shaderModel,
 			dwShaderFlags, 0, ppBlobOut, &errorBlob);
 		if (FAILED(hr))
 		{
-			if (errorBlob != nullptr)
+			if (errorBlob != nullptr && ppErrorMsg != nullptr)
 			{
-				OutputDebugStringA(reinterpret_cast<const char*>(errorBlob->GetBufferPointer()));
+				*ppErrorMsg = errorBlob;
 			}
-			SAFE_RELEASE(errorBlob);
+			else
+			{
+				SAFE_RELEASE(errorBlob);
+			}
 			return hr;
 		}
 

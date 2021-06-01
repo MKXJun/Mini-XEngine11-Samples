@@ -5,35 +5,35 @@
 #include <sstream>
 #include <string>
 #include <memory>
-#include <Utils/GameTimer.h>
-
-class Renderer;
-class GraphicsCore;
-
+#include <Utils/Timer.h>
+#include <Graphics/RenderPipeline.h>
 class MainWindow
 {
 public:
 	MainWindow(HINSTANCE hInstance, std::wstring winName, int startWidth, int startHeight);
 	~MainWindow();
 
-	bool Initialize(Renderer*);
+	bool Initialize();
+	void RegisterRenderPipeline(RenderPipeline* rp);
 	int Run();
+
 
 	LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
 	bool InitMainWindow();
 
-	void OnResize();
-
 	void CalculateFrameStats();
 
-	GameTimer m_Timer;
-	Renderer* m_pRenderer = nullptr;
-	GraphicsCore* m_pGraphicsCore = nullptr;
-
+	HWND m_hWindow;
 	HINSTANCE m_hInstance;
 	std::wstring m_WinName;
+
 	int m_ClientWidth;
 	int m_ClientHeight;
+
+	bool m_IsAppPaused = false;
+	bool m_IsMinimized = false;
+	bool m_IsMaximized = false;
+	bool m_IsResizing = false;
 };

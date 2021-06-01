@@ -1,8 +1,17 @@
 #include "d3dUtil.h"
+#include "GraphicsImpl.h"
 #include <Graphics/MainWindow.h>
-#include <Graphics/Renderer.h>
-#include <Utils/GameInput.h>
+#include <Graphics/Rendering.h>
+#include <Utils/Input.h>
 #include "DXTrace.h"
+
+namespace Time
+{
+	namespace Internal
+	{
+		extern Timer g_Timer;
+	}
+}
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -11,11 +20,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 #if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
-		Renderer* pRenderer = GetRenderer();
 		MainWindow win(hInstance, L"Mini XEngine11", 1280, 720);
-		if (!win.Initialize(pRenderer))
+		if (!win.Initialize())
 			return EXIT_FAILURE;
+		win.RegisterRenderPipeline(GetRenderPipeline());
 		return win.Run();
 	}
 	catch (DxException& e)
@@ -37,10 +45,10 @@ int main(int argc, char* argv[])
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-		Renderer* pRenderer = GetRenderer();
 		MainWindow win(GetModuleHandle(nullptr), L"Mini XEngine11", 1280, 720);
-		if (!win.Initialize(pRenderer))
+		if (!win.Initialize())
 			return EXIT_FAILURE;
+		win.RegisterRenderPipeline(GetRenderPipeline());
 		return win.Run();
 	}
 	catch (DxException& e)
@@ -75,36 +83,27 @@ MainWindow::MainWindow(HINSTANCE hInstance, std::wstring winName, int startWidth
 
 MainWindow::~MainWindow()
 {
-	if (m_pGraphicsCore)
-	{
-		delete m_pGraphicsCore;
-		m_pGraphicsCore = nullptr;
-	}
 }
 
-bool MainWindow::Initialize(Renderer* pRenderer)
+bool MainWindow::Initialize()
 {
-	m_pRenderer = pRenderer;
-	if (m_pGraphicsCore)
-		delete m_pGraphicsCore;
-	m_pGraphicsCore = new GraphicsCore;
-	m_pGraphicsCore->hInstance = m_hInstance;
-	m_pGraphicsCore->winName = m_WinName;
 	InitMainWindow();
-	GameInput::Initialize();
-	if (!m_pRenderer->_Initialize(m_pGraphicsCore))	// internal def
-		return false;
-	if (!m_pRenderer->Initialize(m_pGraphicsCore))	// user def
-		return false;
-	OnResize();
+	Graphics::Impl::Initialize(m_hWindow, m_ClientWidth, m_ClientHeight);
+	Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
+	Input::Initialize(m_hWindow);
 	return true;
+}
+
+void MainWindow::RegisterRenderPipeline(RenderPipeline* rp)
+{
+	Graphics::Impl::RegisterRenderPipeline(rp);
 }
 
 int MainWindow::Run()
 {
 	MSG msg = { 0 };
 
-	m_Timer.Reset();
+	Time::Internal::g_Timer.Reset();
 	while (msg.message != WM_QUIT)
 	{
 
@@ -117,22 +116,13 @@ int MainWindow::Run()
 		// Otherwise, do animation/game stuff.
 		else
 		{
-			m_Timer.Tick();
-			if (!m_pGraphicsCore->isAppPaused)
+			Time::Internal::g_Timer.Tick();
+			if (!m_IsAppPaused)
 			{
 				CalculateFrameStats();
-				float deltaTime = m_Timer.DeltaTime();
-				GameInput::Update(deltaTime);
-				m_pRenderer->Update(deltaTime);		// user def
-				m_pRenderer->_Update(deltaTime);	// internal def
-
-				m_pRenderer->_BeginNewFrame(m_pGraphicsCore);	// internal def
-				m_pRenderer->BeginNewFrame(m_pGraphicsCore);	// user def
-
-				m_pRenderer->DrawScene(m_pGraphicsCore);
-
-				m_pRenderer->EndFrame(m_pGraphicsCore);		// user def
-				m_pRenderer->_EndFrame(m_pGraphicsCore);	// internal def
+				float deltaTime = Time::DeltaTime();
+				Input::Update(deltaTime);
+				Graphics::Impl::RunRenderPipeline();
 			}
 			else
 			{
@@ -141,10 +131,9 @@ int MainWindow::Run()
 		}
 	}
 
-	m_pRenderer->Cleanup(m_pGraphicsCore);
-
 	return (int)msg.wParam;
 }
+
 
 
 LRESULT MainWindow::MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -157,57 +146,54 @@ LRESULT MainWindow::MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			if (m_pGraphicsCore)
-				m_pGraphicsCore->isAppPaused = true;
-			m_Timer.Stop();
+			m_IsAppPaused = true;
+			Time::Internal::g_Timer.Stop();
 		}
 		else
 		{
-			if (m_pGraphicsCore)
-				m_pGraphicsCore->isAppPaused = false;
-			m_Timer.Start();
+			m_IsAppPaused = false;
+			Time::Internal::g_Timer.Start();
 		}
 		return 0;
 
 		// WM_SIZE is sent when the user resizes the window.  
 	case WM_SIZE:
 		// Save the new client area dimensions.
-		m_pGraphicsCore->clientWidth = LOWORD(lParam);
-		m_pGraphicsCore->clientHeight = HIWORD(lParam);
-		if (m_pGraphicsCore->device)
+		m_ClientWidth = LOWORD(lParam);
+		m_ClientHeight = HIWORD(lParam);
+		if (Graphics::Impl::IsInit())
 		{
 			if (wParam == SIZE_MINIMIZED)
 			{
-				m_pGraphicsCore->isAppPaused = true;
-				m_pGraphicsCore->isMinimized = true;
-				m_pGraphicsCore->isMaximized = false;
+				m_IsAppPaused = true;
+				m_IsMinimized = true;
+				m_IsMaximized = false;
 			}
 			else if (wParam == SIZE_MAXIMIZED)
 			{
-				m_pGraphicsCore->isAppPaused = false;
-				m_pGraphicsCore->isMinimized = false;
-				m_pGraphicsCore->isMaximized = true;
-				OnResize();
+				m_IsAppPaused = false;
+				m_IsMinimized = false;
+				m_IsMaximized = true;
+				Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
 			}
 			else if (wParam == SIZE_RESTORED)
 			{
 
 				// Restoring from minimized state?
-				if (m_pGraphicsCore->isMinimized)
+				if (m_IsMinimized)
 				{
-					m_pGraphicsCore->isAppPaused = false;
-					m_pGraphicsCore->isMinimized = false;
-					OnResize();
+					m_IsAppPaused = false;
+					m_IsMinimized = false;
+					Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
 				}
-
 				// Restoring from maximized state?
-				else if (m_pGraphicsCore->isMaximized)
+				else if (m_IsMaximized)
 				{
-					m_pGraphicsCore->isAppPaused = false;
-					m_pGraphicsCore->isMaximized = false;
-					OnResize();
+					m_IsAppPaused = false;
+					m_IsMinimized = false;
+					Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
 				}
-				else if (m_pGraphicsCore->isResizing)
+				else if (m_IsResizing)
 				{
 					// If user is dragging the resize bars, we do not resize 
 					// the buffers here because as the user continuously 
@@ -220,7 +206,7 @@ LRESULT MainWindow::MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 				}
 				else // API call such as SetWindowPos or m_pSwapChain->SetFullscreenState.
 				{
-					OnResize();
+					Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
 				}
 			}
 		}
@@ -228,18 +214,18 @@ LRESULT MainWindow::MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 
 		// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 	case WM_ENTERSIZEMOVE:
-		m_pGraphicsCore->isAppPaused = true;
-		m_pGraphicsCore->isResizing = true;
-		m_Timer.Stop();
+		m_IsAppPaused = true;
+		m_IsResizing = true;
+		Time::Internal::g_Timer.Stop();
 		return 0;
 
 		// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
 		// Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
-		m_pGraphicsCore->isAppPaused = false;
-		m_pGraphicsCore->isResizing = false;
-		m_Timer.Start();
-		OnResize();
+		m_IsAppPaused = false;
+		m_IsResizing = false;
+		Time::Internal::g_Timer.Start();
+		Graphics::Impl::OnResize(m_ClientWidth, m_ClientHeight);
 		return 0;
 
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -275,19 +261,19 @@ LRESULT MainWindow::MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHOVER:
 	case WM_MOUSEMOVE:
-		GameInput::Internal::Mouse::ProcessMessage(msg, wParam, lParam);
+		Input::Internal::Mouse::ProcessMessage(msg, wParam, lParam);
 		return 0;
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		GameInput::Internal::Keyboard::ProcessMessage(msg, wParam, lParam);
+		Input::Internal::Keyboard::ProcessMessage(msg, wParam, lParam);
 		return 0;
 
 	case WM_ACTIVATEAPP:
-		GameInput::Internal::Mouse::ProcessMessage(msg, wParam, lParam);
-		GameInput::Internal::Keyboard::ProcessMessage(msg, wParam, lParam);
+		Input::Internal::Mouse::ProcessMessage(msg, wParam, lParam);
+		Input::Internal::Keyboard::ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}
 
@@ -323,24 +309,18 @@ bool MainWindow::InitMainWindow()
 	int width = R.right - R.left;
 	int height = R.bottom - R.top;
 
-	m_pGraphicsCore->hWindow = CreateWindow(L"D3DWndClassName", m_WinName.c_str(),
+	m_hWindow = CreateWindow(L"D3DWndClassName", m_WinName.c_str(),
 		WS_OVERLAPPEDWINDOW, (screenWidth - width) / 2, (screenHeight - height) / 2, width, height, 0, 0, m_hInstance, 0);
 
-	if (!m_pGraphicsCore->hWindow)
+	if (!m_hWindow)
 	{
 		throw std::exception("CreateWindow Failed.");
 	}
 
-	ShowWindow(m_pGraphicsCore->hWindow, SW_SHOW);
-	UpdateWindow(m_pGraphicsCore->hWindow);
+	ShowWindow(m_hWindow, SW_SHOW);
+	UpdateWindow(m_hWindow);
 
 	return true;
-}
-
-void MainWindow::OnResize()
-{
-	m_pRenderer->_OnResize(m_pGraphicsCore);
-	m_pRenderer->OnResize(m_pGraphicsCore);
 }
 
 void MainWindow::CalculateFrameStats()
@@ -350,17 +330,17 @@ void MainWindow::CalculateFrameStats()
 
 	frameCnt++;
 
-	if ((m_Timer.TotalTime() - timeElapsed) >= 1.0f)
+	if ((Time::TotalTime() - timeElapsed) >= 1.0f)
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
 
 		std::wostringstream outs;
 		outs.precision(6);
-		outs << m_pGraphicsCore->winName << L"    "
+		outs << m_WinName << L"    "
 			<< L"FPS: " << fps << L"    "
 			<< L"Frame Time: " << mspf << L" (ms)";
-		SetWindowText(m_pGraphicsCore->hWindow, outs.str().c_str());
+		SetWindowText(m_hWindow, outs.str().c_str());
 
 		// Reset for next average.
 		frameCnt = 0;

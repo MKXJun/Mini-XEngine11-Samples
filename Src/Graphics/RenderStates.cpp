@@ -13,6 +13,7 @@ ComPtr<ID3D11SamplerState> RenderStates::SSPointClamp			= nullptr;
 ComPtr<ID3D11SamplerState> RenderStates::SSAnistropicWrap		= nullptr;
 ComPtr<ID3D11SamplerState> RenderStates::SSLinearWrap			= nullptr;
 ComPtr<ID3D11SamplerState> RenderStates::SSShadow				= nullptr;
+ComPtr<ID3D11SamplerState> RenderStates::SSShadowPCF			= nullptr;
 
 
 ComPtr<ID3D11BlendState> RenderStates::BSAlphaToCoverage		= nullptr;
@@ -114,8 +115,19 @@ void RenderStates::InitAll(ID3D11Device * device)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	ThrowIfFailed(device->CreateSamplerState(&sampDesc, SSAnistropicWrap.GetAddressOf()));
 
-	// 采样器状态：深度比较与Border模式
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	// 采样器状态：阴影Border模式
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.BorderColor[0] = { 1.0f };
+	sampDesc.MaxAnisotropy = 0;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ThrowIfFailed(device->CreateSamplerState(&sampDesc, SSShadow.GetAddressOf()));
+
+	// 采样器状态：阴影深度比较与Border模式
 	sampDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -124,7 +136,7 @@ void RenderStates::InitAll(ID3D11Device * device)
 	sampDesc.BorderColor[0] = { 1.0f };
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	ThrowIfFailed(device->CreateSamplerState(&sampDesc, SSShadow.GetAddressOf()));
+	ThrowIfFailed(device->CreateSamplerState(&sampDesc, SSShadowPCF.GetAddressOf()));
 	
 	// ******************
 	// 初始化混合状态

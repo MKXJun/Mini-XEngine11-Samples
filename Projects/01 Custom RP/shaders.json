@@ -1,0 +1,14 @@
+{
+  "HLSL/Unlit": {
+    "Path": "HLSL/UnlitPass.hlsl",
+    "Passes": [
+      {
+        "vs": "UnlitPassVertex",
+        "ps": "UnlitPassPixel",
+        "rs": {
+          "CullMode": "None"
+        }
+      }
+    ]
+  }
+}

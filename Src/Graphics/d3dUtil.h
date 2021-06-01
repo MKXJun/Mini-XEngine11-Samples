@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 #include <wincodec.h>			// 使用ScreenGrab需要包含
 #include <vector>
+#include <fstream>
 #include <string_view>
 #include <random>
 
@@ -164,23 +165,48 @@ inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ std::nullptr_t
 }
 
 //
+// XShaderInclude
+//
+class XShaderInclude : public ID3DInclude
+{
+public:
+	XShaderInclude(std::vector<std::string> systemDirs, std::string_view shaderDir = "")
+		: m_SystemDirs(std::move(systemDirs)), m_ShaderDir(shaderDir.data())
+	{
+	}
+
+	HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes);
+	HRESULT __stdcall Close(LPCVOID pData);
+
+private:
+	std::string m_ShaderDir;
+	std::vector<std::string> m_SystemDirs;
+	std::vector<char> m_Data;
+};
+
+
+//
 // 着色器编译相关函数
 //
 
 // ------------------------------
 // CreateShaderFromFile函数
 // ------------------------------
+// [In]pIncludeHandler  管理文件路径和附加目录的Handler
 // [In]csoFileNameInOut 编译好的着色器二进制文件(.cso)，若有指定则优先寻找该文件并读取
 // [In]hlslFileName     着色器代码，若未找到着色器二进制文件则编译着色器代码
 // [In]entryPoint       入口点(指定开始的函数)
 // [In]shaderModel      着色器模型，格式为"*s_5_0"，*可以为c,d,g,h,p,v之一
 // [Out]ppBlobOut       输出着色器二进制信息
+// [Out]ppErrorMsg      输出编译错误信息
 HRESULT CreateShaderFromFile(
+	ID3DInclude* pIncludeHandler,
 	const WCHAR* csoFileNameInOut,
 	const WCHAR* hlslFileName,
 	LPCSTR entryPoint,
 	LPCSTR shaderModel,
-	ID3DBlob** ppBlobOut);
+	ID3DBlob** ppBlobOut,
+	ID3DBlob** ppErrorMsg);
 
 //
 // 缓冲区相关函数

@@ -78,7 +78,7 @@ std::string Camera::GetRenderTextureName() const
 	return m_RenderTextureName;
 }
 
-void Camera::SetViewPortRect(const XMath::Vector4& rect)
+void Camera::SetViewPortRect(const Rect& rect)
 {
 	m_ViewPortRect = rect;
 }
@@ -88,7 +88,7 @@ void Camera::SetViewPortRect(float x, float y, float w, float h)
 	m_ViewPortRect = { x, y, w, h };
 }
 
-XMath::Vector4 Camera::GetViewPortRect() const
+Rect Camera::GetViewPortRect() const
 {
 	return m_ViewPortRect;
 }
@@ -190,9 +190,9 @@ XMath::Matrix4x4 Camera::GetProjMatrix() const
 {
 	if (m_ProjectionType == ProjectionType::Perspective)
 	{
-		return XMath::Matrix::PerspectiveFovLH(m_FieldOfViewY, m_AspectRatio, m_NearPlane, m_FarPlane);
+		return XMath::Matrix::PerspectiveFovLH(XMath::Scalar::ConvertToRadians(m_FieldOfViewY), m_AspectRatio, m_NearPlane, m_FarPlane);
 	}
-	/*else
+	/* TODO: else
 	{
 		XMStoreFloat4x4(&proj, XMMatrixOrthographicLH(
 			m_Size, m_Size / m_AspectRatio, m_NearPlane, m_FarPlane));

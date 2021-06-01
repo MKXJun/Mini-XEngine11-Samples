@@ -44,6 +44,27 @@ namespace XMath
         {
             return (std::min)((std::max)(val, minVal), maxVal);
         }
+
+        inline float Lerp(float a, float b, float t)
+        {
+            return a + (b - a) * t;
+        }
+
+        inline float ModAngles(float angleInRadians)
+        {
+            // Normalize the range from 0.0f to 2 * PI
+            angleInRadians = angleInRadians + PI;
+            // Perform the modulo, unsigned
+            float fTemp = fabsf(angleInRadians);
+            fTemp = fTemp - (2 * PI * static_cast<float>(static_cast<int32_t>(fTemp / (2 * PI))));
+            // Restore the number to the range of -PI to PI-epsilon
+            fTemp = fTemp - PI;
+            // If the modulo'd value was negative, restore negation
+            if (angleInRadians < 0.0f) {
+                fTemp = -fTemp;
+            }
+            return fTemp;
+        }
     }
 
     namespace Vector

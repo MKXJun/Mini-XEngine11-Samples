@@ -1,14 +1,10 @@
-//***************************************************************************************
-// GameTimer.h by Frank Luna (C) 2011 All Rights Reserved.
-//***************************************************************************************
 
-#ifndef GAMETIMER_H
-#define GAMETIMER_H
+#pragma once
 
-class GameTimer
+class Timer
 {
 public:
-	GameTimer();
+	Timer();
 
 	float TotalTime()const;		// 总游戏时间
 	float DeltaTime()const;		// 帧间隔时间
@@ -31,4 +27,8 @@ private:
 	bool m_Stopped;
 };
 
-#endif // GAMETIMER_H
+namespace Time
+{
+	float DeltaTime();
+	float TotalTime();
+}

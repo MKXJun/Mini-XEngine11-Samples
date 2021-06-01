@@ -1,9 +1,9 @@
 
 #pragma once
 
+#include "Component.h"
 #include <vector>
 #include <memory>
-#include <Component/Component.h>
 #include <Math/XMath.h>
 
 class MeshData;
@@ -54,7 +54,7 @@ public:
 
 	void UploadMeshData();
 private:
-	friend class Renderer;
+	friend class CommandBuffer;
 
 	uint32_t m_VertexCount = 0;				// 已创建顶点缓冲区的顶点数目
 	uint32_t m_VertexCapacity = 0;			// 已创建顶点缓冲区的最大容量

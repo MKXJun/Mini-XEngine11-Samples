@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Component.h"
-#include <Math/XMath.h>
+#include <XCore.h>
 
 class Camera : public Component
 {
@@ -46,11 +46,11 @@ public:
 	std::string GetRenderTextureName() const;
 
 	// 设置视口区域
-	void SetViewPortRect(const XMath::Vector4& rect);
+	void SetViewPortRect(const Rect& rect);
 	// 设置视口区域
 	void SetViewPortRect(float x = 0.0f, float y = 0.0f, float w = 1.0f, float h = 1.0f);
 	// 获取视口区域
-	XMath::Vector4 GetViewPortRect() const;
+	Rect GetViewPortRect() const;
 
 	// 设置投影类型
 	void SetProjectionType(ProjectionType type);
@@ -100,8 +100,6 @@ public:
 private:
 	~Camera() override;
 
-	
-
 	// 渲染到纹理的名称
 	std::string m_RenderTextureName;
 
@@ -112,7 +110,7 @@ private:
 	ClearFlag m_ClearFlag = ClearFlag::SolidColor;
 
 	// 视口区域
-	XMath::Vector4 m_ViewPortRect = { 0.0f, 0.0f, 1.0f, 1.0f };
+	Rect m_ViewPortRect = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 	// 投影
 	ProjectionType m_ProjectionType = ProjectionType::Perspective;
@@ -124,7 +122,7 @@ private:
 
 	// 清除
 	float m_ClearDepth = 1.0f;
-	XMath::Vector4 m_ClearColor = { 0.1921f, 0.3019f, 0.4745f, 1.0f };
+	XMath::Vector4 m_ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 };
 

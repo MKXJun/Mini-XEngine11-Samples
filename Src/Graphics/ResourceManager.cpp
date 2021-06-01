@@ -4,12 +4,11 @@
 
 #include <Graphics/ResourceManager.h>
 #include <Graphics/RenderStates.h>
+#include <Graphics/Shader.h>
 
 #include <fstream>
 #include <vector>
 #include <wrl/client.h>
-
-#include <HLSL/XDefines.h>
 
 #include "d3dUtil.h"
 #include "DXTrace.h"
@@ -163,12 +162,32 @@ void ResourceManager::DestroyMeshGraphicsResources(MeshData* ptr)
 		m_MeshGraphicsResources.erase(it);
 }
 
+Material* ResourceManager::CreateMaterial(std::string_view path)
+{
+	bool emplaced;
+	std::map<std::string, Material>::iterator iter;
+
+	std::tie(iter, emplaced) = m_pMaterials.try_emplace(path.data());
+	if (!emplaced)
+		return nullptr;
+	return &iter->second;
+}
+
+Material* ResourceManager::FindMaterial(std::string_view path)
+{
+	auto it = m_pMaterials.find(path.data());
+	if (it != m_pMaterials.end())
+		return &it->second;
+	return nullptr;
+}
+
 void ResourceManager::_LoadSubModel(std::string_view path, GameObject* pModel, const aiScene* pAssimpScene, const aiMesh* pAssimpMesh)
 {
 	uint32_t numVertices = pAssimpMesh->mNumVertices;
 	auto pMeshFilter = pModel->AddComponent<MeshFilter>();
-	auto pMaterial = pModel->AddComponent<Material>();
+	auto pMeshRenderer = pModel->AddComponent<MeshRenderer>();
 	auto pMeshData = (pMeshFilter->m_pMesh = std::make_unique<MeshData>()).get();
+	auto pMaterial = (pMeshRenderer->m_pMaterials.emplace_back(std::make_unique<Material>())).get();
 	// 顶点位置
 	if (numVertices > 0)
 	{
@@ -232,6 +251,8 @@ void ResourceManager::_LoadSubModel(std::string_view path, GameObject* pModel, c
 		}
 	}
 
+	
+
 	// 读取材质
 	if (pAssimpMesh->mMaterialIndex > 0)
 	{
@@ -242,40 +263,26 @@ void ResourceManager::_LoadSubModel(std::string_view path, GameObject* pModel, c
 		float shininess{};
 		uint32_t num = 3;
 		uint32_t success_bit = 0;
-		if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_AMBIENT, (float*)&ambient, &num))
+		/*if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_AMBIENT, (float*)&ambient, &num))
 		{
-			pMaterial->SetVector(X_CB_MAT_AMBIENT, 4, (float*)&ambient);
+			pMaterial->SetVector(Shader::StringToID(X_CB_MAT_AMBIENT), ambient);
 			success_bit |= 0b1u;
-		}
+		}*/
 		if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, (float*)&diffuse, &num))
 		{
-			pMaterial->SetVector(X_CB_MAT_DIFFUSE, 4, (float*)&diffuse);
+			pMaterial->SetVector(Shader::StringToID("x_BaseColor"), diffuse);
 			success_bit |= 0b10u;
 		}
-		if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_SPECULAR, (float*)&specular, &num))
+		/*if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_SPECULAR, (float*)&specular, &num))
 		{
-			pMaterial->SetVector(X_CB_MAT_SPECULAR, 4, (float*)&specular);
+			pMaterial->SetVector(Shader::StringToID(X_CB_MAT_SPECULAR), specular);
 			success_bit |= 0b100u;
-		}
-		if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_COLOR_REFLECTIVE, (float*)&reflective, &num))
-		{
-			pMaterial->SetVector(X_CB_MAT_REFLECTIVE, 3, (float*)&reflective);
-			success_bit |= 0b1000u;
-		}
-		if (aiReturn_SUCCESS == pAssimpMaterial->Get(AI_MATKEY_SHININESS, (float*)&shininess, &num))
-		{
-			pMaterial->SetVector(X_CB_MAT_SHININESS, 1, (float*)&shininess);
-			success_bit |= 0b10000u;
-		}
+		}*/
 
-		if ((success_bit & 0b111u) == 0b111u)
+		/*if ((success_bit & 0b111u) == 0b111u)
 		{
-			pMaterial->SetEffectPass("Phong", "Basic");
-		}
-		else if (success_bit & 0b11010u)
-		{
-			pMaterial->SetEffectPass("BlinnPhong", "Basic");
-		}
+			pMaterial->SetShaderName("HLSL/Phong");
+		}*/
 
 		// 纹理
 		if (pAssimpMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
@@ -295,12 +302,12 @@ void ResourceManager::_LoadSubModel(std::string_view path, GameObject* pModel, c
 			}
 
 			CreateTextureSRV(finalPath);
-			pMaterial->SetTexture(Material::DiffuseMap, finalPath);
+			pMaterial->SetTexture(Shader::StringToID("x_MainTex"), finalPath);
 		}
-		else
-		{
-			pMaterial->SetPassName("Color");
-		}
+		//else
+		//{
+		//	pMaterial->SetShaderName("HLSL/ColorLit");
+		//}
 	}
 }
 

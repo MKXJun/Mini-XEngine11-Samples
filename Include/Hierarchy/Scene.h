@@ -18,11 +18,15 @@ public:
 	Scene();
 	~Scene();
 
+	static Scene* GetMainScene();
+	void SetAsMainScene();
+
 	GameObject* AddGameObject();
 	GameObject* AddGameObject(std::string_view name);
 	GameObject* AddCube(std::string_view name);
 	GameObject* AddSphere(std::string_view name);
 	GameObject* AddCylinder(std::string_view name);
+	GameObject* AddPlane(std::string_view name);
 	GameObject* AddModel(std::string_view name, std::string_view filename);
 
 	GameObject* FindGameObject(std::string_view name);
@@ -34,6 +38,8 @@ public:
 
 	Camera* GetMainCamera();
 	void SetMainCamera(Camera* pCamera);
+
+	
 
 private:
 	friend class GameObject;

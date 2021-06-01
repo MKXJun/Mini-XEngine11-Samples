@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include <Math/XMath.h>
 #include "Component.h"
+#include <Math/XMath.h>
 
 class Light : public Component
 {

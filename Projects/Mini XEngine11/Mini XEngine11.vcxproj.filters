@@ -34,8 +34,8 @@
     <Filter Include="Src\Component">
       <UniqueIdentifier>{dc7ce6a5-e536-4d52-bdf5-4a7090a4ef87}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HLSL">
-      <UniqueIdentifier>{7de05741-ab65-4188-ac29-27746a5f5c78}</UniqueIdentifier>
+    <Filter Include="Include\HLSL">
+      <UniqueIdentifier>{7c8e968f-9c86-4625-beb6-676c5f6d31e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,7 +48,7 @@
     <ClCompile Include="..\..\Src\Components\Light.cpp">
       <Filter>Src\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Components\Material.cpp">
+    <ClCompile Include="..\..\Src\Components\MeshRenderer.cpp">
       <Filter>Src\Component</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\Components\MeshFilter.cpp">
@@ -59,12 +59,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\Components\Transform.cpp">
       <Filter>Src\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\Graphics\Effect.cpp">
-      <Filter>Src\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\Graphics\Renderer.cpp">
-      <Filter>Src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\Graphics\RenderStates.cpp">
       <Filter>Src\Graphics</Filter>
@@ -93,7 +87,7 @@
     <ClCompile Include="..\..\Src\Hirachey\GameObject.cpp">
       <Filter>Src\Hierarchy</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Utils\GameTimer.cpp">
+    <ClCompile Include="..\..\Src\Utils\Timer.cpp">
       <Filter>Src\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\Utils\Geometry.cpp">
@@ -102,13 +96,37 @@
     <ClCompile Include="..\..\Src\Utils\ObjectPool.cpp">
       <Filter>Src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Utils\GameInput.cpp">
+    <ClCompile Include="..\..\Src\Utils\Input.cpp">
       <Filter>Src\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp">
       <Filter>Src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\Graphics\EffectManager.cpp">
+    <ClCompile Include="..\..\Src\Utils\CameraController.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\Keyboard.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\Mouse.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Utils\GameInput.cpp">
+      <Filter>Src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\RenderTexture.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\Shader.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\Graphics.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\CommandBuffer.cpp">
+      <Filter>Src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Graphics\RenderContext.cpp">
       <Filter>Src\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,13 +140,7 @@
     <ClInclude Include="..\..\Include\Component\Light.h">
       <Filter>Include\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Component\Material.h">
-      <Filter>Include\Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Component\MeshFilter.h">
-      <Filter>Include\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Component\TextureRender.h">
       <Filter>Include\Component</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Component\Transform.h">
@@ -140,13 +152,10 @@
     <ClInclude Include="..\..\Include\Graphics\ResourceManager.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Graphics\Effect.h">
-      <Filter>Include\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Graphics\MainWindow.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Graphics\Renderer.h">
+    <ClInclude Include="..\..\Include\Graphics\Rendering.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Hierarchy\GameObject.h">
@@ -161,14 +170,11 @@
     <ClInclude Include="..\..\Include\Utils\ObjectPool.h">
       <Filter>Include\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Utils\GameInput.h">
+    <ClInclude Include="..\..\Include\Utils\Input.h">
       <Filter>Include\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Utils\GameTimer.h">
+    <ClInclude Include="..\..\Include\Utils\Timer.h">
       <Filter>Include\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\HLSL\XDefines.h">
-      <Filter>HLSL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\Graphics\WICTextureLoader11.h">
       <Filter>Src\Graphics</Filter>
@@ -188,18 +194,61 @@
     <ClInclude Include="..\..\Include\Graphics\RenderStates.h">
       <Filter>Include\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Graphics\EffectManager.h">
+    <ClInclude Include="..\..\Include\Utils\CameraController.h">
+      <Filter>Include\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Utils\Mouse.h">
+      <Filter>Src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Utils\Keyboard.h">
+      <Filter>Src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Utils\GameInput.h">
+      <Filter>Src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\XDefines.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\RenderTexture.h">
       <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\XCore.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Component\MeshRenderer.h">
+      <Filter>Include\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\Shader.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\ShaderImpl.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\Graphics.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\GraphicsImpl.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\RenderContext.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\RenderPipeline.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Graphics\CommandBuffer.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\RenderContextImpl.h">
+      <Filter>Src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Graphics\CommandBufferImpl.h">
+      <Filter>Src\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Include\HLSL\Phong.hlsl">
-      <Filter>HLSL</Filter>
+    <FxCompile Include="..\..\Include\HLSL\Common.hlsl">
+      <Filter>Include\HLSL</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Include\HLSL\XUtils.hlsli">
-      <Filter>HLSL</Filter>
-    </None>
   </ItemGroup>
 </Project>

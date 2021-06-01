@@ -69,7 +69,7 @@ private:
 
 private:
 	friend class Scene;
-	friend class Renderer;
+	friend class RenderContext;
 	friend class ResourceManager;
 	
 	std::string m_Name;

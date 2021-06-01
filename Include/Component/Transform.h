@@ -1,9 +1,10 @@
 
 #pragma once
 
-#include <Math/XMath.h>
+#include "Component.h"
 #include <string>
-#include <Component/Component.h>
+#include <Math/XMath.h>
+
 
 class Transform : public Component
 {

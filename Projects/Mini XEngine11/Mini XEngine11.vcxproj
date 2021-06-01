@@ -98,67 +98,81 @@
     <ClCompile Include="..\..\Src\Components\Camera.cpp" />
     <ClCompile Include="..\..\Src\Components\Component.cpp" />
     <ClCompile Include="..\..\Src\Components\Light.cpp" />
-    <ClCompile Include="..\..\Src\Components\Material.cpp" />
+    <ClCompile Include="..\..\Src\Components\MeshRenderer.cpp" />
     <ClCompile Include="..\..\Src\Components\MeshFilter.cpp" />
     <ClCompile Include="..\..\Src\Components\RenderTexture(todo_dx11_split).cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Src\Components\Transform.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\CommandBuffer.cpp" />
     <ClCompile Include="..\..\Src\Graphics\d3dUtil.cpp" />
     <ClCompile Include="..\..\Src\Graphics\DDSTextureLoader11.cpp" />
     <ClCompile Include="..\..\Src\Graphics\DXTrace.cpp" />
-    <ClCompile Include="..\..\Src\Graphics\Effect.cpp" />
-    <ClCompile Include="..\..\Src\Graphics\EffectManager.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\Graphics.cpp" />
     <ClCompile Include="..\..\Src\Graphics\MainWindow.cpp" />
-    <ClCompile Include="..\..\Src\Graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\RenderContext.cpp" />
     <ClCompile Include="..\..\Src\Graphics\RenderStates.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\RenderTexture.cpp" />
     <ClCompile Include="..\..\Src\Graphics\ResourceManager.cpp" />
     <ClCompile Include="..\..\Src\Graphics\ScreenGrab11.cpp" />
+    <ClCompile Include="..\..\Src\Graphics\Shader.cpp" />
     <ClCompile Include="..\..\Src\Graphics\WICTextureLoader11.cpp" />
     <ClCompile Include="..\..\Src\Hirachey\GameObject.cpp" />
     <ClCompile Include="..\..\Src\Hirachey\Scene.cpp" />
+    <ClCompile Include="..\..\Src\Utils\CameraController.cpp" />
     <ClCompile Include="..\..\Src\Utils\GameInput.cpp" />
-    <ClCompile Include="..\..\Src\Utils\GameTimer.cpp" />
+    <ClCompile Include="..\..\Src\Utils\Input.cpp" />
+    <ClCompile Include="..\..\Src\Utils\Timer.cpp" />
     <ClCompile Include="..\..\Src\Utils\Geometry.cpp" />
+    <ClCompile Include="..\..\Src\Utils\Keyboard.cpp" />
+    <ClCompile Include="..\..\Src\Utils\Mouse.cpp" />
     <ClCompile Include="..\..\Src\Utils\ObjectPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Component\Camera.h" />
     <ClInclude Include="..\..\Include\Component\Component.h" />
     <ClInclude Include="..\..\Include\Component\Light.h" />
-    <ClInclude Include="..\..\Include\Component\Material.h" />
     <ClInclude Include="..\..\Include\Component\MeshFilter.h" />
-    <ClInclude Include="..\..\Include\Component\TextureRender.h" />
+    <ClInclude Include="..\..\Include\Component\MeshRenderer.h" />
     <ClInclude Include="..\..\Include\Component\Transform.h" />
-    <ClInclude Include="..\..\Include\Graphics\Effect.h" />
-    <ClInclude Include="..\..\Include\Graphics\EffectManager.h" />
+    <ClInclude Include="..\..\Include\Graphics\CommandBuffer.h" />
+    <ClInclude Include="..\..\Include\Graphics\Graphics.h" />
     <ClInclude Include="..\..\Include\Graphics\MainWindow.h" />
-    <ClInclude Include="..\..\Include\Graphics\Renderer.h" />
+    <ClInclude Include="..\..\Include\Graphics\RenderContext.h" />
+    <ClInclude Include="..\..\Include\Graphics\Rendering.h" />
+    <ClInclude Include="..\..\Include\Graphics\RenderPipeline.h" />
     <ClInclude Include="..\..\Include\Graphics\RenderStates.h" />
+    <ClInclude Include="..\..\Include\Graphics\RenderTexture.h" />
     <ClInclude Include="..\..\Include\Graphics\ResourceManager.h" />
+    <ClInclude Include="..\..\Include\Graphics\Shader.h" />
     <ClInclude Include="..\..\Include\Hierarchy\GameObject.h" />
     <ClInclude Include="..\..\Include\Hierarchy\Scene.h" />
-    <ClInclude Include="..\..\Include\HLSL\XDefines.h" />
+    <FxCompile Include="..\..\Include\HLSL\Common.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <ClInclude Include="..\..\Include\Math\XMath.h" />
-    <ClInclude Include="..\..\Include\Utils\GameInput.h" />
-    <ClInclude Include="..\..\Include\Utils\GameTimer.h" />
+    <ClInclude Include="..\..\Include\Utils\CameraController.h" />
+    <ClInclude Include="..\..\Include\Utils\Input.h" />
+    <ClInclude Include="..\..\Include\Utils\Timer.h" />
     <ClInclude Include="..\..\Include\Utils\Geometry.h" />
     <ClInclude Include="..\..\Include\Utils\ObjectPool.h" />
+    <ClInclude Include="..\..\Include\XCore.h" />
+    <ClInclude Include="..\..\Include\XDefines.h" />
+    <ClInclude Include="..\..\Src\Graphics\CommandBufferImpl.h" />
     <ClInclude Include="..\..\Src\Graphics\d3dUtil.h" />
     <ClInclude Include="..\..\Src\Graphics\DDSTextureLoader11.h" />
     <ClInclude Include="..\..\Src\Graphics\DXTrace.h" />
+    <ClInclude Include="..\..\Src\Graphics\GraphicsImpl.h" />
+    <ClInclude Include="..\..\Src\Graphics\RenderContextImpl.h" />
     <ClInclude Include="..\..\Src\Graphics\ScreenGrab11.h" />
+    <ClInclude Include="..\..\Src\Graphics\ShaderImpl.h" />
     <ClInclude Include="..\..\Src\Graphics\WICTextureLoader11.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\Include\HLSL\Phong.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Include\HLSL\XUtils.hlsli" />
+    <ClInclude Include="..\..\Src\Utils\GameInput.h" />
+    <ClInclude Include="..\..\Src\Utils\Keyboard.h" />
+    <ClInclude Include="..\..\Src\Utils\Mouse.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
